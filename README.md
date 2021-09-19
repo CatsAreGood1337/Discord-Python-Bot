@@ -1,2 +1,1 @@
-# Discord-Python-Bot
-Discord bot 
+#Discord Bot
