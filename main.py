@@ -1,38 +1,31 @@
-import json, requests, discord, random, asyncio
-from asyncio import sleep
+import json, requests, discord
 from discord.ext import commands
-from config import settings
 from discord.utils import get
+from dotenv import load_dotenv
+import os
 
-bot = commands.Bot(command_prefix = settings['prefix'])
-bot.remove_command( 'help' )
-text_filter = ['@everyone']
+load_dotenv()
+bot = commands.Bot(command_prefix = commands.when_mentioned_or(os.getenv('PREFIX')),intents=discord.Intents.all(),case_insensitive=True,help_command=None,activity=discord.Game("| *help"),status=discord.Status.idle)
 
-@bot.event
-async def on_ready():
-     while True:
-          await bot.change_presence(status=discord.Status.idle, activity=discord.Game("| *help"))
-          await sleep(10)
 
-@bot.event
-async def on_command_error( ctx, error ):
-    pass
 
-@bot.command(pass_context=True)
+
+@bot.command()
 async def help(ctx):
         embed = discord.Embed(title="CatsAreGood", color = 0xff9900)
-        embed.add_field( name = 'cat'.format( command_prefix = settings['prefix'] ), value = 'Random cat')
-        embed.add_field( name = 'dog'.format( command_prefix = settings['prefix'] ), value = 'Random dog' )
-        embed.add_field( name = 'author'.format( command_prefix = settings['prefix'] ), value = 'Send github bot author' ) 
-        embed.add_field( name = 'hello'.format( command_prefix = settings['prefix'] ), value = 'Write ur bot welcome you' )
-        embed.add_field( name = 'panda'.format( command_prefix = settings['prefix'] ), value = 'Random panda' )
-        embed.add_field( name = 'join'.format( command_prefix = settings['prefix'] ), value = 'Bot joined voice')
-        embed.add_field( name = 'leave'.format( command_prefix = settings['prefix'] ), value = 'Bot leave voice' )
-        embed.add_field( name = 'members'.format( command_prefix = settings['prefix'] ), value = 'member counter' )
-        embed.add_field( name = 'penis'.format( command_prefix = settings['prefix'] ), value = 'long your penis' )
-        embed.add_field( name = 'clear'.format( command_prefix = settings['prefix'] ), value = 'clear amount messages' )
-        embed.add_field( name = 'buy'.format( command_prefix = settings['prefix'] ), value = 'create new ticket' )
-        embed.add_field( name = 'close'.format( command_prefix = settings['prefix'] ), value = 'close you own ticket' )
+        embed.add_field( name = os.getenv('PREFIX')+'cat', value = 'Random cat')
+        embed.add_field( name = os.getenv('PREFIX')+'dog', value = 'Random dog' )
+        embed.add_field( name = os.getenv('PREFIX')+'author', value = 'Send github bot author' ) 
+        embed.add_field( name = os.getenv('PREFIX')+'hello', value = 'Write ur bot welcome you' )
+        embed.add_field( name = os.getenv('PREFIX')+'panda', value = 'Random panda' )
+        embed.add_field( name = os.getenv('PREFIX')+'join', value = 'Bot joined voice')
+        embed.add_field( name = os.getenv('PREFIX')+'leave', value = 'Bot leave voice' )
+        embed.add_field( name = os.getenv('PREFIX')+'members', value = 'member counter' )
+        if ctx.channel.is_nsfw:
+            embed.add_field( name = os.getenv('PREFIX')+'penis', value = 'long your penis' )
+        embed.add_field( name = os.getenv('PREFIX')+'clear', value = 'clear amount messages' )
+        embed.add_field( name = os.getenv('PREFIX')+'buy', value = 'create new ticket' )
+        embed.add_field( name = os.getenv('PREFIX')+'close', value = 'close you own ticket' )
         await ctx.send(embed = embed)
 
 @bot.command()
@@ -397,6 +390,7 @@ async def deladminrole(ctx, role_id=None):
 async def members(ctx):
     await ctx.send(f':cat: Количество человек на сервере `{ctx.guild.member_count}`')
 
+@commands.is_nsfw()
 @bot.command() #1
 async def penis(ctx):
     penis = "8" + ("=" * random.randint(5, 20)) + "D"
@@ -492,4 +486,4 @@ async def clear_error( ctx, error ):
     if isinstance( error, commands.MissingPermissions ):
         await ctx.send(f'{ctx.author.name}, Вы не имеете  право использовать данную комманду!')
 
-bot.run(settings['token'])
+bot.run(os.getenv('TOKEN'))

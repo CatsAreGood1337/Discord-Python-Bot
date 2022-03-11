@@ -1,7 +1,19 @@
 #Discord Bot
 
-### pip install discord, pip install json, pip install asyncio, pip install requests
+A basic discord bot!
 
-### how to bot start? click start.bat 
+## Setup
+`pip install -r requirements.txt`
 
-## please follow me 
+## Start
+`python main.py`
+
+## Config
+Make a file called `.env` and type the following
+```
+TOKEN: (Your token)
+PREFIX: (The prefix)
+```
+
+
+
